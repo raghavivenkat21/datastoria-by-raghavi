@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.io as pio
-import io
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="DataStoria by RAGHAVI",
+    page_title="DataStoria by Raghavi",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -14,7 +12,7 @@ st.set_page_config(
 # ---------------- HEADER ----------------
 st.markdown("""
     <h1 style='text-align: center; color: #4CAF50;'>
-        DataStoria - AI Style Data Analytics Dashboard by Raghavi
+        DataStoria Pro - by Raghavi
     </h1>
     <hr>
 """, unsafe_allow_html=True)
@@ -38,7 +36,9 @@ if uploaded_file:
         "🔍 Data Quality"
     ])
 
-    # ---------------- TAB 1: OVERVIEW ----------------
+    numeric_cols = df.select_dtypes(include="number").columns
+
+    # ---------------- TAB 1 ----------------
     with tab1:
 
         st.subheader("Dataset Overview")
@@ -60,10 +60,7 @@ if uploaded_file:
             mime="text/csv"
         )
 
-    # ---------------- NUMERIC COLS ----------------
-    numeric_cols = df.select_dtypes(include="number").columns
-
-    # ---------------- TAB 2: VISUALS ----------------
+    # ---------------- TAB 2 ----------------
     with tab2:
 
         st.subheader("📊 Automatic Visualizations")
@@ -81,13 +78,12 @@ if uploaded_file:
 
             st.plotly_chart(fig, use_container_width=True)
 
-            img_bytes = pio.to_image(fig, format="png")
-
+            # SAFE DOWNLOAD (no kaleido issue)
             st.download_button(
-                "📊 Download Chart",
-                data=img_bytes,
-                file_name="chart.png",
-                mime="image/png"
+                "📊 Download Dataset (CSV)",
+                data=df.to_csv(index=False).encode("utf-8"),
+                file_name="chart_data.csv",
+                mime="text/csv"
             )
 
             st.subheader("🔗 Correlation Heatmap")
@@ -103,7 +99,7 @@ if uploaded_file:
 
             st.plotly_chart(heatmap, use_container_width=True)
 
-    # ---------------- TAB 3: INSIGHTS ----------------
+    # ---------------- TAB 3 ----------------
     with tab3:
 
         st.subheader("🧠 Smart Insights")
@@ -135,7 +131,7 @@ if uploaded_file:
             else:
                 st.write(f"🔵 {col} → Numerical / Other")
 
-    # ---------------- TAB 4: DATA QUALITY ----------------
+    # ---------------- TAB 4 ----------------
     with tab4:
 
         st.subheader("📊 Data Quality Score")
